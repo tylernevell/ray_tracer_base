@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include "Vec3.h"
 #include "Color.h"
 #include "Ray.h"
@@ -10,6 +11,13 @@ Color ray_color(const Ray& r) {
 }
 
 int main() {
+
+    // create output file for creating our image
+    std::ofstream out_image {"../image.ppm"};
+    if (!out_image) {
+        std::cerr << "Error creating file" << std::endl;
+        return 1;
+    }
 
     // Image
     const auto aspect_ratio = 16.0 / 9.0;
@@ -27,7 +35,7 @@ int main() {
     auto lower_left_corner = origin - horizontal/2 - vertical/2 - Vec3(0, 0, focal_length);
 
     // Render
-    std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+    out_image << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 
     // rows written out from top to bottom
     for (int j  = image_height - 1; j >= 0; --j) {
@@ -41,7 +49,7 @@ int main() {
             // blends white and blue depending on height of the y coordinate after
             // scaling  the ray direction to unit length
             Color pixel_color = ray_color(r);
-            write_color(std::cout, pixel_color);
+            write_color(out_image, pixel_color);
 
             // Red goes from full off (black) to fully on (bright red) from left to right
             // Green goes from black at the bottom to fully on at the top
@@ -49,6 +57,8 @@ int main() {
         }
     }
     std::cerr << "\nDone.\n";
+    out_image.close();
+    return 0;
 }
 
 /* 

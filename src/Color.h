@@ -4,7 +4,8 @@
 #include "Vec3.h"
 
 #include <iostream>
+#include <fstream>
 
-void write_color(std::ostream &out, Color pixel_color);
+void write_color(std::ofstream &out, Color pixel_color);
 
 #endif
